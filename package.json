@@ -1,0 +1,31 @@
+{
+  "name": "react-native-ctrlpanel-core",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": "ctrl-alt-deseat/react-native-ctrlpanel-core",
+  "files": [
+    "bridge.js",
+    "compiled.js",
+    "index.d.ts",
+    "index.js"
+  ],
+  "scripts": {
+    "prepare": "webpack"
+  },
+  "dependencies": {
+    "@types/react": "^16.4.6",
+    "base64-js": "^1.3.0",
+    "encode-utf8": "^1.0.2"
+  },
+  "devDependencies": {
+    "@ctrlpanel/core": "^0.4.0",
+    "@ctrlpanel/find-accounts-for-hostname": "^1.1.0",
+    "@fanny-pack/memory": "^1.0.0-beta.1",
+    "webpack": "^4.16.0",
+    "webpack-command": "^0.4.1"
+  },
+  "peerDependencies": {
+    "react": "^16.4.0",
+    "react-native": ">=0.55"
+  }
+}
