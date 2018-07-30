@@ -20,7 +20,7 @@
   "devDependencies": {
     "@ctrlpanel/core": "^0.4.0",
     "@ctrlpanel/find-accounts-for-hostname": "^1.1.0",
-    "@fanny-pack/memory": "^1.0.0-beta.1",
+    "@fanny-pack/browser": "^1.0.0-beta.1",
     "webpack": "^4.16.0",
     "webpack-command": "^0.4.1"
   },
