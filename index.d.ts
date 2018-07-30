@@ -34,12 +34,11 @@ export type SubscriptionStatus = (
   'unpaid'
 )
 
-export type State = (
-  { kind: 'empty' } |
-  { kind: 'locked', handle: string, secretKey: string, syncToken: string } |
-  { kind: 'unlocked', handle: string, parsedEntries: ParsedEntries, secretKey: string, syncToken: string } |
-  { kind: 'connected', handle: string, parsedEntries: ParsedEntries, hasPaymentInformation: boolean, secretKey: string, subscriptionStatus: SubscriptionStatus, syncToken: string, trialDaysLeft: number }
-)
+export type EmptyState = { kind: 'empty' }
+export type LockedState = { kind: 'locked', handle: string, secretKey: string, syncToken: string }
+export type UnlockedState = { kind: 'unlocked', handle: string, parsedEntries: ParsedEntries, secretKey: string, syncToken: string }
+export type ConnectedState = { kind: 'connected', handle: string, parsedEntries: ParsedEntries, hasPaymentInformation: boolean, secretKey: string, subscriptionStatus: SubscriptionStatus, syncToken: string, trialDaysLeft: number }
+export type State = (EmptyState | LockedState | UnlockedState | ConnectedState)
 
 export default class CtrlpanelCore extends Component {
   currentState: State
