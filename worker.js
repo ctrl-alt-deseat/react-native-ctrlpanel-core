@@ -68,7 +68,7 @@ window['Ctrlpanel'] = {
     return jsonState(state = await core.sync(connectedState))
   },
   async unlock (masterPassword) {
-    return jsonState(state = await core.unlock(state, masterPassword))
+    return jsonState(state = await core.unlock(state, { masterPassword }))
   },
   async connect () {
     return jsonState(state = await core.connect(state))
