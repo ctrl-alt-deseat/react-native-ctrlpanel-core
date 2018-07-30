@@ -1,5 +1,5 @@
 const React = require('react')
-const { AsyncStorage, StyleSheet, WebView } = require('react-native')
+const { AsyncStorage, StyleSheet, View, WebView } = require('react-native')
 
 const encodeUtf8 = require('encode-utf8')
 const base64 = require('base64-js')
@@ -12,8 +12,9 @@ function encodeBase64 (input) {
 }
 
 const styles = StyleSheet.create({
-  webView: {
+  hide: {
     display: 'none',
+    position: 'absolute',
 
     width: 0,
     height: 0,
@@ -200,7 +201,7 @@ class Bridge extends React.Component {
     const code = `((function () {${internalLibrary};${this.props.libraryCode}})())`
     const injectString = `eval(window.atob('${encodeBase64(code)}'))`
 
-    return React.createElement(WebView, {
+    const webView = React.createElement(WebView, {
       domStorageEnabled: true,
       injectedJavaScript: injectString,
       javaScriptEnabled: true,
@@ -210,8 +211,10 @@ class Bridge extends React.Component {
       onMessage: (ev) => this.handleMessage(ev.nativeEvent.data),
       ref: this[kWebView],
       source: { uri },
-      style: styles.webView,
+      style: styles.hide,
     })
+
+    return React.createElement(View, { style: styles.hide }, webView)
   }
 }
 
