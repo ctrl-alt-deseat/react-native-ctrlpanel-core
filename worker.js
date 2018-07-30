@@ -1,6 +1,6 @@
 import CtrlpanelCore from '@ctrlpanel/core'
 import findAccountsForHostname from '@ctrlpanel/find-accounts-for-hostname'
-import FannyPackBrowser from '@fanny-pack/browser'
+import FannyPackReactNative from '@fanny-pack/react-native'
 
 /** @type {CtrlpanelCore} */
 let core = null
@@ -47,7 +47,7 @@ window['Ctrlpanel'] = {
     if (apiHost == null) apiHost = undefined
     if (deseatmeApiHost == null) deseatmeApiHost = undefined
 
-    const storage = new FannyPackBrowser('ctrlpanel')
+    const storage = new FannyPackReactNative('ctrlpanel')
 
     core = new CtrlpanelCore({ apiHost, deseatmeApiHost, storage })
   },

@@ -39,5 +39,8 @@ module.exports = {
   },
   plugins: [
     new ExportAsString()
-  ]
+  ],
+  externals: {
+    'react-native': 'window.ReactNativeShim'
+  }
 }

@@ -1,5 +1,5 @@
 const React = require('react')
-const { StyleSheet, WebView } = require('react-native')
+const { AsyncStorage, StyleSheet, WebView } = require('react-native')
 
 const encodeUtf8 = require('encode-utf8')
 const base64 = require('base64-js')
@@ -75,6 +75,42 @@ const internalLibrary = `
       postMessage({ type: 'error', error: serializeError(err) })
     }
   })
+
+  let asyncStorageRequestId = 0
+  const asyncStorageHandlers = new Map()
+
+  function asyncStorageCall (fn, args) {
+    return new Promise((resolve, reject) => {
+      const id = asyncStorageRequestId++
+
+      asyncStorageHandlers.set(id, { resolve, reject })
+      postMessage({ type: 'async-storage', id, fn, args })
+    })
+  }
+
+  function asyncStorageResponse (msg) {
+    if (msg.type === 'resolve') {
+      asyncStorageHandlers.get(msg.id).resolve(msg.result)
+    } else {
+      asyncStorageHandlers.get(msg.id).reject(Object.assign(new Error(), msg.error))
+    }
+  }
+
+  const AsyncStorage = {
+    getItem (...args) { return asyncStorageCall('getItem', args) },
+    setItem (...args) { return asyncStorageCall('setItem', args) },
+    removeItem (...args) { return asyncStorageCall('removeItem', args) },
+    mergeItem (...args) { return asyncStorageCall('mergeItem', args) },
+    clear (...args) { return asyncStorageCall('clear', args) },
+    getAllKeys (...args) { return asyncStorageCall('getAllKeys', args) },
+    flushGetRequests (...args) { asyncStorageCall('flushGetRequests', args) },
+    multiGet (...args) { return asyncStorageCall('multiGet', args) },
+    multiSet (...args) { return asyncStorageCall('multiSet', args) },
+    multiRemove (...args) { return asyncStorageCall('multiRemove', args) },
+    multiMerge (...args) { return asyncStorageCall('multiMerge', args) },
+  }
+
+  window.ReactNativeShim = { AsyncStorage }
 }())
 `
 
@@ -131,6 +167,12 @@ class Bridge extends React.Component {
         break
       case 'reject':
         this[kHandlers].get(msg.id).reject(Object.assign(new Error(), msg.error))
+        break
+      case 'async-storage':
+        Promise.resolve(AsyncStorage[msg.fn](...msg.args)).then(
+          (result) => this.callFunction('asyncStorageResponse', { type: 'resolve', id: msg.id, result }),
+          (err) => this.callFunction('asyncStorageResponse', { type: 'reject', id: msg.id, error: { name: err.name, message: err.message } }),
+        )
         break
       default:
         console.warn('Unknown message type: ' + msg.type)
