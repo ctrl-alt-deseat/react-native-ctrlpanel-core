@@ -68,7 +68,18 @@ window['Ctrlpanel'] = {
     return jsonState(state = await core.sync(connectedState))
   },
   async unlock (masterPassword) {
-    return jsonState(state = await core.unlock(state, { masterPassword }))
+    let nextState = await core.unlock(state, { masterPassword })
+
+    /*
+      A connected state means that we did not make an offline login, which means that no data have
+      been synced to this device yet. In order not to flash an empty state, we run a sync together
+      with this unlock action.
+      */
+    if (nextState.kind === 'connected') {
+      nextState = await core.sync(nextState)
+    }
+
+    return jsonState(state = nextState)
   },
   async connect () {
     return jsonState(state = await core.connect(state))
