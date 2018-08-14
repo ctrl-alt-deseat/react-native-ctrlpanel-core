@@ -88,7 +88,13 @@ window['Ctrlpanel'] = {
     if (state.kind === 'unlocked') await window['Ctrlpanel'].connect()
     if (state.kind !== 'connected') throw new Error(`Invalid state: ${state.kind}`)
 
-    return jsonState(state = await core.sync(state))
+    const nextState = await core.sync(state)
+
+    if (state.kind !== 'unlocked' && state.kind !== 'connected') {
+      throw Object.assign(new Error('Sync aborted'), { code: 'LOCKED_DURING_SYNC' })
+    }
+
+    return jsonState(state = nextState)
   },
 
   async setPaymentInformation (paymentInformation) {
